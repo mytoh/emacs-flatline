@@ -97,15 +97,17 @@
   `(:eval (propertize vc-mode 'face 'flatline:vc-mode-face)))
 
 (defun flatline:shorten-path (path)
-  (lexical-let ((npath (cl-remove-if '(lambda (s) (string= s ""))
-                                     (split-string (abbreviate-file-name path "/")))))
+  (lexical-let ((npath (cl-remove-if #'(lambda (s) (string= s ""))
+                                     (split-string (abbreviate-file-name path) "/"))))
     (cond
      ((< 4 (length npath))
-      (concat "/" (car npath)
+      (concat (if (string= "~" (car npath))
+                  "" "/")
+              (car npath)
               "/" (cadr npath)
               "/" "..."
-              "/" (car (cddr npath))
-              "/" (cl-cadddr npath)))
+              "/" (car (last npath 2))
+              "/" (car (last npath))))
      (t path))))
 
 (defun flatline:buffer-directory ()
@@ -228,13 +230,13 @@
 
 ;; buffer name
 (defface flatline:buffer-face
-  '((t ( :background "black" :foreground "#a7bc7a")))
+  '((t ( :background "#3a3a4f" :foreground "#a7bc7a")))
   "flatline buffer face"
   :group 'flatline-face)
 
 ;; buffer directory
 (defface flatline:buffer-directory-face
-  '((t (:foreground "#55cb92" :background "gray20")))
+  '((t (:foreground "#65cba2" :background "gray20")))
   "flatline buffer directory face"
   :group 'flatline-face)
 
