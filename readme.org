@@ -1,0 +1,9 @@
+
+* flatline
+** usage
+#+begin_src scheme
+ (require 'flatline)
+ (flatline-mode 1)
+#+end_src
+    
+
