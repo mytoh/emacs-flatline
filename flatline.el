@@ -77,7 +77,9 @@
 
 (defun flatline:minor-mode ()
   `(:eval
-    (propertize (format-mode-line minor-mode-alist) 'face 'flatline:minor-mode-face)))
+    (concat "("
+            (propertize (format-mode-line minor-mode-alist) 'face 'flatline:minor-mode-face)
+            ")")))
 
 (defun flatline:warning ()
   `(:eval (propertize "%e" 'face 'flatline:warning-face)))
