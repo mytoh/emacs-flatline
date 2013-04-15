@@ -77,9 +77,7 @@
 
 (defun flatline:minor-mode ()
   `(:eval
-    (concat "("
-            (propertize (format-mode-line minor-mode-alist) 'face 'flatline:minor-mode-face)
-            ")")))
+    (propertize (format-mode-line minor-mode-alist) 'face 'flatline:minor-mode-face)))
 
 (defun flatline:warning ()
   `(:eval (propertize "%e" 'face 'flatline:warning-face)))
@@ -114,47 +112,6 @@
 
 (defun flatline:buffer-directory ()
   `(:eval (propertize (flatline:shorten-path default-directory) 'face 'flatline:buffer-directory-face)))
-
-(defcustom flatline:mode-line-format nil
-  "flatline mode-line string list"
-  :type 'symbol)
-;; initialize mode-line
-(defun flatline:mode-line-format ()
-  (list
-   (flatline:space "  ")
-   ;; buffer
-   (flatline:buffer)
-   (flatline:space " ")
-
-   ;; directory
-   (flatline:buffer-directory)
-   (flatline:space "  ")
-   ;; eol
-   (flatline:eol-desc)
-   (flatline:space "  ")
-   ;; modified
-   (flatline:modified)
-   ;; column
-   '(:eval (propertize "(" 'face 'flatline:normal-face))
-   (flatline:column)
-   '(:eval (propertize "," 'face 'flatline:normal-face))
-   (flatline:line)
-   '(:eval (propertize ")" 'face 'flatline:normal-face))
-   (flatline:space "  ")
-   ;; vc mode
-   (flatline:vc-mode)
-   (flatline:space "  ")
-   ;; major mode
-   (flatline:major-mode)
-   (flatline:space "  ")
-   ;; minor mode
-   (flatline:minor-mode)
-   (flatline:space "  ")
-   ;; misc inf
-   (flatline:misc-info)
-   (flatline:space "  ")
-   ;; nyan
-   (flatline:nyan-mode)))
 
 
 
@@ -274,6 +231,52 @@
 
 
 
+;; initialize mode-line
+(defcustom flatline:mode-line-format nil
+  "flatline mode-line string list"
+  :type 'symbol)
+
+(defun flatline:mode-line-format ()
+  (list
+   (flatline:space "  ")
+   ;; buffer
+   (flatline:buffer)
+   (flatline:space " ")
+
+   ;; directory
+   (flatline:buffer-directory)
+   (flatline:space "  ")
+   ;; eol
+   (flatline:eol-desc)
+   (flatline:space "  ")
+   ;; modified
+   (flatline:modified)
+   ;; column
+   '(:eval (propertize "(" 'face 'flatline:normal-face))
+   (flatline:column)
+   '(:eval (propertize "," 'face 'flatline:normal-face))
+   (flatline:line)
+   '(:eval (propertize ")" 'face 'flatline:normal-face))
+   (flatline:space "  ")
+   ;; vc mode
+   (flatline:vc-mode)
+   (flatline:space "  ")
+
+   '(:eval (propertize "(" 'face 'flatline:normal-face))
+   ;; major mode
+   (flatline:major-mode)
+   ;; minor mode
+   (flatline:minor-mode)
+   '(:eval (propertize ")" 'face 'flatline:normal-face))
+
+   (flatline:space "  ")
+   ;; misc inf
+   (flatline:misc-info)
+   (flatline:space "  ")
+   ;; nyan
+   (flatline:nyan-mode)))
+
+
 (defun flatline:mode-start ()
   (if flatline-mode
       (setq-default mode-line-format
@@ -283,8 +286,7 @@
 (define-minor-mode flatline-mode
   :init-value nil
   :group 'modeline
-  (flatline:mode-start)
-  )
+  (flatline:mode-start))
 
 
 (provide 'flatline)
