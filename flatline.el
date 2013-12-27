@@ -29,7 +29,7 @@
            (propertize " RO " 'face 'flatline:face-read-only))
           ((buffer-modified-p)
            (propertize " ** " 'face 'flatline:face-modified))
-          (t (propertize " -- " 'face 'flatline:face-modified)))))
+          (t (propertize " -- " 'face 'flatline:face-not-modified)))))
 
 (cl-defun flatline:mule-info ()
   `((current-input-method
@@ -146,6 +146,12 @@
   '((t ( :background "gray20" :foreground "#c82829")))
   "flatline modified face"
   :group 'flatline-face)
+
+(defface flatline:face-not-modified
+  '((t ( :background "gray20" :foreground "#386889")))
+  "flatline not modified face"
+  :group 'flatline-face)
+
 (defface flatline:face-read-only
   '((t ( :background "gray20" :foreground "#4271ae" :box '(:line-width 2 :color "#4271ae"))))
   "flatline read only face"
