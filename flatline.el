@@ -46,9 +46,9 @@
 (setq eol-mnemonic-mac "mac")
 
 (cl-defun flatline:eol-desc ()
-  (lexical-let* ((eol (coding-system-eol-type buffer-file-coding-system))
-                 (mnemonic (coding-system-eol-type-mnemonic buffer-file-coding-system))
-                 (desc (cl-assoc eol mode-line-eol-desc-cache)))
+  (cl-letf* ((eol (coding-system-eol-type buffer-file-coding-system))
+             (mnemonic (coding-system-eol-type-mnemonic buffer-file-coding-system))
+             (desc (cl-assoc eol mode-line-eol-desc-cache)))
     (if (and desc (eq (cadr desc) mnemonic))
         (cddr desc)
       (if desc (setq mode-line-eol-desc-cache nil)) ;Flush the cache if stale.
@@ -97,8 +97,8 @@
   `(:eval (propertize vc-mode 'face 'flatline:vc-mode-face)))
 
 (cl-defun flatline:shorten-path (path)
-  (lexical-let ((npath (cl-remove-if #'(lambda (s) (string= s ""))
-                                     (split-string (abbreviate-file-name path) "/"))))
+  (cl-letf ((npath (cl-remove-if #'(lambda (s) (string= s ""))
+                                 (split-string (abbreviate-file-name path) "/"))))
     (cond
      ((< 4 (length npath))
       (concat (if (string= "~" (car npath))
