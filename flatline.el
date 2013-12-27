@@ -96,7 +96,10 @@
   `(:eval (propertize ,space 'face 'flatline:face-space)))
 
 (cl-defun flatline:vc-mode ()
-  `(:eval (propertize vc-mode 'face 'flatline:face-vc-mode)))
+  `(:eval
+    (if vc-mode
+        (propertize vc-mode 'face 'flatline:face-vc-mode)
+      "")))
 
 (cl-defun flatline:shorten-path (path)
   (cl-letf ((npath (cl-remove-if #'(lambda (s) (string= s ""))
