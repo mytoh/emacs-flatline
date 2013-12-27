@@ -11,19 +11,19 @@
   "Faces used in the mode line."
   :group 'mode-line)
 
-(defun flatline:front-space ()
+(cl-defun flatline:front-space ()
   `(:eval (if (display-graphic-p) " " "-")))
 
-(defun flatline:column ()
+(cl-defun flatline:column ()
   `(:eval (propertize "%02c" 'face
                       (if (>= (current-column) 80)
                           'flatline:80col-face
                         'flatline:column-face))))
 
-(defun flatline:line ()
+(cl-defun flatline:line ()
   `(:eval (propertize "%02l" 'face 'flatline:line-face)))
 
-(defun flatline:modified ()
+(cl-defun flatline:modified ()
   `(:eval
     (cond (buffer-read-only
            (propertize " RO " 'face 'flatline:read-only-face))
@@ -31,12 +31,12 @@
            (propertize " ** " 'face 'flatline:modified-face))
           (t (propertize " -- " 'face 'flatline:modified-face)))))
 
-(defun flatline:mule-info ()
+(cl-defun flatline:mule-info ()
   `((current-input-method
      (:propertize ("" current-input-method-title)))
     (:eval (flatline:eol-desc))))
 
-(defun flatline:mnemonic ()
+(cl-defun flatline:mnemonic ()
   `(:eval
     (propertize (format-mode-line "%z") 'face 'flatline:mnemonic-face)))
 
@@ -45,7 +45,7 @@
 (setq eol-mnemonic-dos "dos")
 (setq eol-mnemonic-mac "mac")
 
-(defun flatline:eol-desc ()
+(cl-defun flatline:eol-desc ()
   (lexical-let* ((eol (coding-system-eol-type buffer-file-coding-system))
                  (mnemonic (coding-system-eol-type-mnemonic buffer-file-coding-system))
                  (desc (cl-assoc eol mode-line-eol-desc-cache)))
@@ -59,44 +59,44 @@
       (push (cons eol (cons mnemonic desc)) mode-line-eol-desc-cache)
       desc)))
 
-(defun flatline:client ()
+(cl-defun flatline:client ()
   `(:eval
     (propertize (if (frame-parameter nil 'client) "@" "/")
                 'face 'flatline:client-face)))
 
-(defun flatline:buffer ()
+(cl-defun flatline:buffer ()
   `(:eval
     (propertize "%b"
                 'face 'flatline:buffer-face)))
 
-(defun flatline:major-mode ()
+(cl-defun flatline:major-mode ()
   `(:eval
     (propertize mode-name 'face 'flatline:major-mode-face)
     (propertize mode-line-process 'face 'flatline:major-mode-face)
     (propertize "%n" 'face 'flatline:major-mode-face)))
 
-(defun flatline:minor-mode ()
+(cl-defun flatline:minor-mode ()
   `(:eval
     (propertize (format-mode-line minor-mode-alist) 'face 'flatline:minor-mode-face)))
 
-(defun flatline:warning ()
+(cl-defun flatline:warning ()
   `(:eval (propertize "%e" 'face 'flatline:warning-face)))
 
-(defun flatline:misc-info ()
+(cl-defun flatline:misc-info ()
   `(:propertize
     mode-line-misc-info
     face flatline:misc-info-face))
 
-(defun flatline:nyan-mode ()
+(cl-defun flatline:nyan-mode ()
   `(:eval (when nyan-mode (list (nyan-create)))))
 
-(defun flatline:space (space)
+(cl-defun flatline:space (space)
   `(:eval (propertize ,space 'face 'flatline:space-face)))
 
-(defun flatline:vc-mode ()
+(cl-defun flatline:vc-mode ()
   `(:eval (propertize vc-mode 'face 'flatline:vc-mode-face)))
 
-(defun flatline:shorten-path (path)
+(cl-defun flatline:shorten-path (path)
   (lexical-let ((npath (cl-remove-if #'(lambda (s) (string= s ""))
                                      (split-string (abbreviate-file-name path) "/"))))
     (cond
@@ -110,7 +110,7 @@
               "/" (car (last npath))))
      (t path))))
 
-(defun flatline:buffer-directory ()
+(cl-defun flatline:buffer-directory ()
   `(:eval (propertize (flatline:shorten-path default-directory) 'face 'flatline:buffer-directory-face)))
 
 
@@ -236,7 +236,7 @@
   "flatline mode-line string list"
   :type 'symbol)
 
-(defun flatline:mode-line-format ()
+(cl-defun flatline:mode-line-format ()
   (list
    (flatline:space "  ")
    ;; buffer
@@ -277,7 +277,7 @@
    (flatline:nyan-mode)))
 
 
-(defun flatline:mode-start ()
+(cl-defun flatline:mode-start ()
   (if flatline-mode
       (setq-default mode-line-format
                     (flatline:mode-line-format))))
