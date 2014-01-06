@@ -1,24 +1,23 @@
 ;;; component.el -*- lexical-binding: t -*-
 
 (cl-defun flatline:front-space ()
-  `(:eval (if (display-graphic-p) " " "-")))
+  (if (display-graphic-p) " " "-"))
 
 (cl-defun flatline:column ()
-  `(:eval (propertize "%02c" 'face
-                      (if (>= (current-column) 80)
-                          'flatline:face-80col
-                        'flatline:face-column))))
+  (propertize "%02c" 'face
+              (if (>= (current-column) 80)
+                  'flatline:face-80col
+                'flatline:face-column)))
 
 (cl-defun flatline:line ()
-  `(:eval (propertize "%02l" 'face 'flatline:face-line)))
+  (propertize "%02l" 'face 'flatline:face-line))
 
 (cl-defun flatline:modified ()
-  `(:eval
-    (cond (buffer-read-only
-           (propertize " RO " 'face 'flatline:face-read-only))
-          ((buffer-modified-p)
-           (propertize " ** " 'face 'flatline:face-modified))
-          (t (propertize " -- " 'face 'flatline:face-not-modified)))))
+  (cond (buffer-read-only
+         (propertize " RO " 'face 'flatline:face-read-only))
+        ((buffer-modified-p)
+         (propertize " ** " 'face 'flatline:face-modified))
+        (t (propertize " -- " 'face 'flatline:face-not-modified))))
 
 (cl-defun flatline:mule-info ()
   `((current-input-method
@@ -26,8 +25,7 @@
     (:eval (flatline:eol-desc))))
 
 (cl-defun flatline:mnemonic ()
-  `(:eval
-    (propertize (format-mode-line "%z") 'face 'flatline:face-mnemonic)))
+  (propertize (format-mode-line "%z") 'face 'flatline:face-mnemonic))
 
 (setq eol-mnemonic-undecided ":")
 (setq eol-mnemonic-unix "unix")
@@ -49,27 +47,24 @@
       desc)))
 
 (cl-defun flatline:client ()
-  `(:eval
-    (propertize (if (frame-parameter nil 'client) "@" "/")
-                'face 'flatline:face-client)))
+  (propertize (if (frame-parameter nil 'client) "@" "/")
+              'face 'flatline:face-client))
 
 (cl-defun flatline:buffer ()
-  `(:eval
-    (propertize "%b"
-                'face 'flatline:face-buffer)))
+  (propertize "%b"
+              'face 'flatline:face-buffer))
 
 (cl-defun flatline:major-mode ()
-  `(:eval
-    (propertize mode-name 'face 'flatline:face-major-mode)
-    (propertize mode-line-process 'face 'flatline:face-major-mode)
-    (propertize "%n" 'face 'flatline:face-major-mode)))
+  (concat
+   (propertize mode-name 'face 'flatline:face-major-mode)
+   (if mode-line-process (propertize mode-line-process 'face 'flatline:face-major-mode))
+   (propertize "%n" 'face 'flatline:face-major-mode)))
 
 (cl-defun flatline:minor-mode ()
-  `(:eval
-    (propertize (format-mode-line minor-mode-alist) 'face 'flatline:face-minor-mode)))
+  (propertize (format-mode-line minor-mode-alist) 'face 'flatline:face-minor-mode))
 
 (cl-defun flatline:warning ()
-  `(:eval (propertize "%e" 'face 'flatline:face-warning)))
+  (propertize "%e" 'face 'flatline:face-warning))
 
 (cl-defun flatline:misc-info ()
   `(:propertize
@@ -77,16 +72,15 @@
     face flatline:face-misc-info))
 
 (cl-defun flatline:nyan-mode ()
-  `(:eval (when nyan-mode (list (nyan-create)))))
+  (when nyan-mode (list (nyan-create))))
 
 (cl-defun flatline:space (space)
-  `(:eval (propertize ,space 'face 'flatline:face-space)))
+  (propertize space 'face 'flatline:face-space))
 
 (cl-defun flatline:vc-mode ()
-  `(:eval
-    (if vc-mode
-        (propertize vc-mode 'face 'flatline:face-vc-mode)
-      "")))
+  (if vc-mode
+      (propertize vc-mode 'face 'flatline:face-vc-mode)
+    ""))
 
 (cl-defun flatline:shorten-path (path)
   (cl-letf ((npath (cl-remove-if #'(lambda (s) (string= s ""))
@@ -103,7 +97,7 @@
      (t path))))
 
 (cl-defun flatline:buffer-directory ()
-  `(:eval (propertize (flatline:shorten-path default-directory) 'face 'flatline:face-buffer-directory)))
+  (propertize (flatline:shorten-path default-directory) 'face 'flatline:face-buffer-directory))
 
 (provide 'flatline-component)
 
