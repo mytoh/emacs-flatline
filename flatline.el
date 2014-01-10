@@ -38,14 +38,13 @@
 (defun flatline:mode-line-fill ()
   ;; justify right by filling with spaces to right fringe, 20 should be calculated
   (cl-letf* ((len (flatline:width (flatline:mode-line-right)))
-             (face 'flatline:face-normal)
-             (prop (if (eq 'right (get-scroll-bar-mode))
-                       (propertize " " 'display '((space :align-to (- right-fringe 21)))
-                                   'face face)
-                     (propertize " "
-                                 'display `((space :align-to (- right-fringe ,len)))
-                                 'face face))))
-    prop))
+             (face 'flatline:face-normal))
+    (if (eq 'right (get-scroll-bar-mode))
+        (propertize " " 'display '((space :align-to (- right 21)))
+                    'face face)
+      (propertize " "
+                  'display `((space :align-to (- right (- ,len 3))))
+                  'face face))))
 
 (cl-defun flatline:width (value)
   (if (not value)
