@@ -1,5 +1,7 @@
 ;;; component.el -*- lexical-binding: t -*-
 
+(require 'subr-x)
+
 (cl-defun flatline:front-space ()
   (if (display-graphic-p) " " "-"))
 
@@ -83,17 +85,20 @@
     ""))
 
 (cl-defun flatline:shorten-path (path)
-  (cl-letf ((npath (cl-remove-if #'(lambda (s) (string= s ""))
+  (cl-letf ((npath (cl-remove-if (lambda (s) (string-empty-p s))
                                  (split-string (abbreviate-file-name path) "/"))))
     (cond
      ((< 4 (length npath))
       (concat (if (string= "~" (car npath))
                   "" "/")
-              (car npath)
-              "/" (cadr npath)
-              "/" "..."
-              "/" (car (last npath 2))
-              "/" (car (last npath))))
+              (string-join
+               (list
+                (car npath)
+                (cadr npath)
+                "..."
+                (car (last npath 2))
+                (car (last npath)))
+               "/")))
      (t path))))
 
 (cl-defun flatline:buffer-directory ()
