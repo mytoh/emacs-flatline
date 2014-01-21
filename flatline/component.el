@@ -52,10 +52,6 @@
   (propertize (if (frame-parameter nil 'client) "@" "/")
               'face 'flatline:face-client))
 
-(cl-defun flatline:buffer ()
-  (propertize "%b"
-              'face 'flatline:face-buffer))
-
 (cl-defun flatline:major-mode ()
   (concat
    (propertize mode-name 'face 'flatline:face-major-mode)
@@ -86,7 +82,7 @@
 
 (cl-defun flatline:shorten-path (path)
   (cl-letf ((npath (cl-remove-if (lambda (s) (string-empty-p s))
-                                 (split-string (abbreviate-file-name path) "/"))))
+                                 (split-string (abbreviate-file-name (expand-file-name path)) "/"))))
     (cond
      ((< 4 (length npath))
       (concat (if (string= "~" (car npath))
