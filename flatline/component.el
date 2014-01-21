@@ -102,7 +102,7 @@
      (t path))))
 
 (cl-defun flatline:buffer-directory ()
-  (propertize (flatline:shorten-path default-directory) 'face 'flatline:face-buffer-directory))
+  (flatline:shorten-path default-directory))
 
 (provide 'flatline-component)
 

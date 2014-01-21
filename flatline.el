@@ -14,30 +14,63 @@
   "Faces used in the mode line."
   :group 'mode-line)
 
-(cl-defmacro flatline:concat (&rest body)
-  `(cl-concatenate 'string ,@body))
 
-(cl-defun flatline:mode-line-left ()
-  (flatline:concat
-   (flatline:buffer)
-   (flatline:space "  ")
-   (flatline:major-mode)
-   (flatline:minor-mode)))
+(defvar flatline:mode-line
+  '(("%b" . flatline:face-buffer)
+    (flatline:major-mode . flatline:face-major-mode)
+    (flatline:minor-mode . flatline:face-minor-mode)
+    fill
+    (flatline:column . flatline:face-column)
+    (flatline:line . flatline:face-line)
+    (flatline:buffer-directory . flatline:face-buffer-directory)
+    ))
 
-(cl-defun flatline:mode-line-right ()
-  (flatline:concat
-   (propertize "(" 'face 'flatline:face-normal)
-   (flatline:column)
-   (propertize "," 'face 'flatline:face-normal)
-   (flatline:line)
-   (propertize ")" 'face 'flatline:face-normal)
-   (flatline:space "  ")
-   (flatline:buffer-directory)
-   (flatline:space "  ")))
+(cl-defun my-buffer-name ()
+  (buffer-name (current-buffer)))
 
-(defun flatline:mode-line-fill ()
-  ;; justify right by filling with spaces to right fringe, 20 should be calculated
-  (cl-letf* ((len (flatline:width (flatline:mode-line-right)))
+(cl-defun flatline:make-component (comp)
+  (cl-typecase comp
+    (cons (flatline:make-component-list comp))
+    (string (flatline:make-component-string comp))
+    (symbol (flatline:make-component-symbol comp))))
+
+(cl-defun flatline:make-component-string (comp)
+  (cl-concatenate 'string
+                  " "
+                  comp
+                  " "))
+
+(cl-defun flatline:make-component-list (comp)
+  (cl-typecase (car comp)
+    (string
+     (propertize (cl-concatenate 'string
+                                 " "
+                                 (car comp)
+                                 " ")
+                 'face (cdr comp)))
+    (symbol
+     `(:eval
+       ((lambda ()
+          (propertize (cl-concatenate 'string
+                                      " "
+                                      (,(car comp))
+                                      " ")
+                      'face ',(cdr comp))))))))
+
+(cl-defun flatline:make-component-symbol (comp)
+  (cl-case comp
+    (fill (flatline:make-component-fill comp))
+    (t (cond ((fboundp comp)
+              `(:eval
+                ((lambda ()
+                   (cl-concatenate 'string
+                                   " "
+                                   (,comp)
+                                   " ")))))))))
+
+(cl-defun flatline:make-component-fill (comp)
+  (cl-letf* ((right-comps (cdr (cl-member 'fill flatline:mode-line)))
+             (len (flatline:width (cl-mapcar 'flatline:make-component right-comps)))
              (face 'flatline:face-normal))
     (if (eq 'right (get-scroll-bar-mode))
         (propertize " " 'display '((space :align-to (- right 21)))
@@ -51,24 +84,15 @@
       0
     (length (format-mode-line value))))
 
-(cl-defun flatline:create-mode-line ()
-  (concat
-   (flatline:mode-line-left)
-   (flatline:mode-line-fill)
-   (flatline:mode-line-right)))
-
-(cl-defun flatline:mode-line-format ()
-  '(:eval
-    (flatline:create-mode-line)))
-
 (cl-defun flatline:update ()
   (setq-default mode-line-format
-                (flatline:mode-line-format)))
+                (cl-mapcar
+                 'flatline:make-component
+                 flatline:mode-line)))
 
 (cl-defun flatline:mode-start ()
   (if flatline-mode
       (flatline:update)))
-
 
 (define-minor-mode flatline-mode
   :init-value nil
