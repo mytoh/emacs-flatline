@@ -59,16 +59,15 @@
 
 (cl-defun flatline:make-component-symbol (comp)
   (cl-case comp
-    (fill (flatline:make-component-fill comp))
+    (fill `(:eval (flatline:make-component-fill)))
     (t (cond ((fboundp comp)
               `(:eval
-                ((lambda ()
-                   (cl-concatenate 'string
-                                   " "
-                                   (,comp)
-                                   " ")))))))))
+                ((cl-concatenate 'string
+                                       " "
+                                       (,comp)
+                                       " "))))))))
 
-(cl-defun flatline:make-component-fill (comp)
+(cl-defun flatline:make-component-fill ()
   (cl-letf* ((right-comps (cdr (cl-member 'fill flatline:mode-line)))
              (len (flatline:width (cl-mapcar 'flatline:make-component right-comps)))
              (face 'flatline:face-normal))
