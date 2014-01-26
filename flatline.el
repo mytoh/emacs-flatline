@@ -14,19 +14,24 @@
   "Faces used in the mode line."
   :group 'mode-line)
 
-
-(defvar flatline:mode-line
+(defcustom flatline:mode-line
   '(("%b" . flatline:face-buffer)
     (flatline:major-mode . flatline:face-major-mode)
     (flatline:minor-mode . flatline:face-minor-mode)
     fill
     (flatline:column . flatline:face-column)
     (flatline:line . flatline:face-line)
-    (flatline:buffer-directory . flatline:face-buffer-directory)
-    ))
+    (flatline:buffer-directory . flatline:face-buffer-directory))
+  "mode-line-format for flatline"
+  :type 'list
+  :group 'flatline)
 
-(cl-defun my-buffer-name ()
-  (buffer-name (current-buffer)))
+(cl-defun flatline:pad (str &optional n)
+  (cl-letf ((num (or n 1)))
+    (cl-concatenate 'string
+                    (make-string num ? )
+                    str
+                    (make-string num ? ))))
 
 (cl-defun flatline:make-component (comp)
   (cl-typecase comp
@@ -35,42 +40,38 @@
     (symbol (flatline:make-component-symbol comp))))
 
 (cl-defun flatline:make-component-string (comp)
-  (cl-concatenate 'string
-                  " "
-                  comp
-                  " "))
+  (flatline:pad comp))
 
 (cl-defun flatline:make-component-list (comp)
   (cl-typecase (car comp)
     (string
-     (propertize (cl-concatenate 'string
-                                 " "
-                                 (car comp)
-                                 " ")
-                 'face (cdr comp)))
+     (cl-letf ((str (flatline:pad (car comp)))
+               (face (cdr comp)))
+       `(:propertize ,str face ,face)))
     (symbol
-     `(:eval
-       ((lambda ()
-          (propertize (cl-concatenate 'string
-                                      " "
-                                      (,(car comp))
-                                      " ")
-                      'face ',(cdr comp))))))))
+     (cl-case (car comp)
+       (fill `(:eval (flatline:make-component-fill ',(cdr comp))))
+       (t (cond ((fboundp (car comp))
+                 `(:eval
+                   ((lambda ()
+                      (propertize (flatline:pad (,(car comp)))
+                                  'face ',(cdr comp))))))))))))
 
 (cl-defun flatline:make-component-symbol (comp)
   (cl-case comp
-    (fill `(:eval (flatline:make-component-fill)))
+    (fill `(:eval (flatline:make-component-fill 'flatline:face-normal)))
     (t (cond ((fboundp comp)
               `(:eval
-                ((cl-concatenate 'string
-                                       " "
-                                       (,comp)
-                                       " "))))))))
+                ((flatline:pad (,comp)))))))))
 
-(cl-defun flatline:make-component-fill ()
-  (cl-letf* ((right-comps (cdr (cl-member 'fill flatline:mode-line)))
-             (len (flatline:width (cl-mapcar 'flatline:make-component right-comps)))
-             (face 'flatline:face-normal))
+(cl-defun flatline:make-component-fill (face)
+  (cl-letf* ((right-comps (cdr (or (cl-member 'fill flatline:mode-line)
+                                   (cl-member-if (lambda (x)
+                                                   (if (consp x)
+                                                       (equalp 'fill (car x))
+                                                     nil))
+                                                 flatline:mode-line))))
+             (len (flatline:width (cl-mapcar 'flatline:make-component right-comps))))
     (if (eq 'right (get-scroll-bar-mode))
         (propertize " " 'display '((space :align-to (- right 21)))
                     'face face)
@@ -83,15 +84,25 @@
       0
     (length (format-mode-line value))))
 
-(cl-defun flatline:update ()
+(cl-defun flatline:set ()
   (setq-default mode-line-format
                 (cl-mapcar
                  'flatline:make-component
                  flatline:mode-line)))
 
+(cl-defun flatline:update ()
+  (setq mode-line-format
+        (cl-mapcar
+         'flatline:make-component
+         flatline:mode-line)))
+
 (cl-defun flatline:mode-start ()
   (if flatline-mode
-      (flatline:update)))
+      (flatline:set)))
+
+(cl-defun flatline-update ()
+  (interactive)
+  (flatline:update))
 
 (define-minor-mode flatline-mode
   :init-value nil
