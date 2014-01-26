@@ -28,10 +28,12 @@
 
 (cl-defun flatline:pad (str &optional n)
   (cl-letf ((num (or n 1)))
-    (cl-concatenate 'string
-                    (make-string num ? )
-                    str
-                    (make-string num ? ))))
+    (if (string-empty-p str)
+        str
+      (cl-concatenate 'string
+                      (make-string num ? )
+                      str
+                      (make-string num ? )))))
 
 (cl-defun flatline:make-component (comp)
   (cl-typecase comp
