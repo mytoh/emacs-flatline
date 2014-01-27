@@ -53,7 +53,8 @@
     (symbol
      (cl-case (car comp)
        (fill `(:eval (flatline:make-component-fill ',(cdr comp))))
-       (t (cond ((fboundp (car comp))
+       (t (cond ((and (fboundp (car comp))
+                      (facep (cdr comp)))
                  `(:eval
                    ((lambda ()
                       (propertize (flatline:pad (,(car comp)))
