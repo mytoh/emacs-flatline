@@ -41,10 +41,7 @@
     (if (and desc (eq (cadr desc) mnemonic))
         (cddr desc)
       (if desc (setq mode-line-eol-desc-cache nil)) ;Flush the cache if stale.
-      (setq desc
-            (propertize
-             mnemonic
-             'face 'flatline:face-eol-desc))
+      (setq desc mnemonic)
       (push (cons eol (cons mnemonic desc)) mode-line-eol-desc-cache)
       desc)))
 
