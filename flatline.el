@@ -65,7 +65,7 @@
     (fill `(:eval (flatline:make-component-fill 'flatline:face-normal)))
     (t (cond ((fboundp comp)
               `(:eval
-                ((flatline:pad (,comp)))))))))
+                (,comp)))))))
 
 (cl-defun flatline:make-component-fill (face)
   (cl-letf* ((right-comps (cdr (or (cl-member 'fill flatline:mode-line)
@@ -74,12 +74,12 @@
                                                        (equalp 'fill (car x))
                                                      nil))
                                                  flatline:mode-line))))
-             (len (flatline:width (cl-mapcar 'flatline:make-component right-comps))))
+             (rlen (flatline:width (cl-mapcar 'flatline:make-component right-comps))))
     (if (eq 'right (get-scroll-bar-mode))
         (propertize " " 'display '((space :align-to (- right 21)))
                     'face face)
       (propertize " "
-                  'display `((space :align-to (- right (- ,len 3))))
+                  'display `((space :align-to (- right ,rlen)))
                   'face face))))
 
 (cl-defun flatline:width (value)
@@ -97,7 +97,8 @@
   (setq mode-line-format
         (cl-mapcar
          'flatline:make-component
-         flatline:mode-line)))
+         flatline:mode-line))
+  (force-mode-line-update))
 
 (cl-defun flatline:mode-start ()
   (if flatline-mode
