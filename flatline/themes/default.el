@@ -1,11 +1,6 @@
 ;;; default.el -*- lexical-binding: t -*-
 
-(cl-defun flatline:theme-get-face (part)
-  (intern
-   (string-join `( "flatline"
-                   "theme"
-                   ,(symbol-name flatline:theme)
-                   ,(symbol-name part)) "-")))
+
 
 (defface flatline-theme-default-edge
   '((t (:foreground "gray10"
@@ -13,13 +8,13 @@
                     :box nil)))
   "face for left")
 
-(defface flatline-theme-default-sub
+(defface flatline-theme-default-middle
   '((t (:foreground "gray70"
                     :background  "#123550"
                     :box nil)))
   "face for sub")
 
-(defface flatline-theme-default-sub-sub
+(defface flatline-theme-default-fill
   '((t (:foreground  "white"
                      :background  "#112230"
                      :box nil)))
