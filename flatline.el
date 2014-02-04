@@ -48,18 +48,29 @@
 (cl-defun flatline:make-component-list (comp)
   (cl-typecase (car comp)
     (string
-     (cl-letf ((str (flatline:pad (car comp)))
-               (face (cdr comp)))
-       `(:propertize ,str face ,face)))
+     (cond ((facep (cdr comp))
+            (cl-letf ((str (flatline:pad (car comp)))
+                      (face (cdr comp)))
+              `(:propertize ,str face ,face)))
+           ((symbolp (cdr comp))
+            (cl-letf ((str (flatline:pad (car comp)))
+                      (face (flatline:theme-get-face (cdr comp))))
+              `(:propertize ,str face ,face)))))
     (symbol
-     (cl-case (car comp)
-       (fill `(:eval (flatline:make-component-fill ',(cdr comp))))
-       (t (cond ((and (fboundp (car comp))
-                      (facep (cdr comp)))
-                 `(:eval
-                   ((lambda ()
-                      (propertize (flatline:pad (,(car comp)))
-                                  'face ',(cdr comp))))))))))))
+     (cond ((cl-equalp 'fill (car comp))
+            `(:eval (flatline:make-component-fill ',(cdr comp))))
+           ((and (fboundp (car comp))
+                 (facep (cdr comp)))
+            `(:eval
+              ((lambda ()
+                 (propertize (flatline:pad (,(car comp)))
+                             'face ',(cdr comp))))))
+           ((and (fboundp (car comp))
+                 (symbolp (cdr comp)))
+            `(:eval
+              ((lambda ()
+                 (propertize (flatline:pad (,(car comp)))
+                             'face ',(flatline:theme-get-face (cdr comp)))))))))))
 
 (cl-defun flatline:make-component-symbol (comp)
   (cl-case comp
@@ -68,8 +79,10 @@
               `(:eval
                 (,comp)))))))
 
-(cl-defun flatline:make-component-fill (face)
-  (cl-letf* ((right-comps (cdr (or (cl-member 'fill flatline:mode-line)
+(cl-defun flatline:make-component-fill (_face)
+  (cl-letf* ((face (cond ((facep _face) _face)
+                         ((symbolp _face) (flatline:theme-get-face _face))))
+             (right-comps (cdr (or (cl-member 'fill flatline:mode-line)
                                    (cl-member-if (lambda (x)
                                                    (if (consp x)
                                                        (equalp 'fill (car x))
