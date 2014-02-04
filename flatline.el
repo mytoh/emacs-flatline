@@ -9,6 +9,7 @@
 
 (require 'flatline-face "flatline/face")
 (require 'flatline-component "flatline/component")
+(require 'flatline-theme "flatline/theme")
 
 (defgroup flatline nil
   "Faces used in the mode line."
@@ -87,26 +88,24 @@
       0
     (length (format-mode-line value))))
 
-(cl-defun flatline:set ()
+(cl-defun flatline:set (lst)
+  (setq flatline:mode-line lst)
   (setq-default mode-line-format
                 (cl-mapcar
                  'flatline:make-component
-                 flatline:mode-line)))
+                 lst)))
 
-(cl-defun flatline:update ()
-  (setq mode-line-format
-        (cl-mapcar
-         'flatline:make-component
-         flatline:mode-line))
+(cl-defun flatline:update (lst)
+  (flatline:set lst)
   (force-mode-line-update))
 
 (cl-defun flatline:mode-start ()
   (if flatline-mode
-      (flatline:set)))
+      (flatline:set flatline:mode-line)))
 
 (cl-defun flatline-update ()
   (interactive)
-  (flatline:update))
+  (flatline:update flatline:mode-line))
 
 (define-minor-mode flatline-mode
   :init-value nil
