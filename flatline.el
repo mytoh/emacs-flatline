@@ -96,29 +96,35 @@
                   'display `((space :align-to (- right ,rlen)))
                   'face face))))
 
+(cl-defun flatline:add (comp)
+  (if (and (boundp 'flatline:mode-line)
+           (not (null flatline:mode-line)))
+      (setq flatline:mode-line
+            (append flatline:mode-line (list comp)))
+    (setq flatline:mode-line `(,comp))))
+
 (cl-defun flatline:width (value)
   (if (not value)
       0
     (length (format-mode-line value))))
 
-(cl-defun flatline:set (lst)
-  (setq flatline:mode-line lst)
+(cl-defun flatline:set-default ()
   (setq-default mode-line-format
                 (cl-mapcar
                  'flatline:make-component
-                 lst)))
+                 flatline:mode-line)))
 
-(cl-defun flatline:update (lst)
-  (flatline:set lst)
+(cl-defun flatline:update ()
+  (flatline:set-default)
   (force-mode-line-update))
 
 (cl-defun flatline:mode-start ()
   (if flatline-mode
-      (flatline:set flatline:mode-line)))
+      (flatline:update)))
 
 (cl-defun flatline-update ()
   (interactive)
-  (flatline:update flatline:mode-line))
+  (flatline:update))
 
 (define-minor-mode flatline-mode
   :init-value nil
