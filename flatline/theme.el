@@ -12,7 +12,6 @@
 (cl-defun flatline:theme-get-face (part)
   (intern
    (string-join `( "flatline"
-                   "theme"
                    ,(symbol-name flatline:theme)
                    ,(symbol-name part)) "-")))
 

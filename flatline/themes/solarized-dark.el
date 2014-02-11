@@ -1,31 +1,31 @@
 ;;; solarized-dark.el -*- lexical-binding: t -*-
 
 
-(defface flatline-theme-solarized-dark-left
+(defface flatline-solarized-dark-left
   '((t (:foreground "#fdf6e3"
                     :background "#268bd2"
                     :box nil)))
   "face for left")
 
-(defface flatline-theme-solarized-dark-left-sub
+(defface flatline-solarized-dark-left-sub
   '((t (:foreground "#fdf6e3"
                     :background "#586e75"
                     :box nil)))
   "face for left")
 
-(defface flatline-theme-solarized-dark-right
+(defface flatline-solarized-dark-right
   '((t (:foreground "#073642"
                     :background  "#839496"
                     :box nil)))
   "face for sub")
 
-(defface flatline-theme-solarized-dark-right-sub
+(defface flatline-solarized-dark-right-sub
   '((t (:foreground "#93a1a1"
                     :background  "#586e75"
                     :box nil)))
   "face for sub")
 
-(defface flatline-theme-solarized-dark-middle
+(defface flatline-solarized-dark-middle
   '((t (:foreground "#93a1a1"
                     :background  "#073642"
                     :box nil)))
