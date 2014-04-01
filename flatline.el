@@ -1,4 +1,4 @@
-;;; flatline.el --- flat modeline
+;;; flatline.el --- flat modeline -*- lexical-binding: t -*-
 
 ;;; Code:
 

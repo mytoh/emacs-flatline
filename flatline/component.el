@@ -30,7 +30,7 @@
   (propertize (format-mode-line "%z") 'face 'flatline:face-mnemonic))
 
 (setq eol-mnemonic-undecided ":")
-(setq eol-mnemonic-unix "unix")
+(setq eol-mnemonic-unix "␊ unix")
 (setq eol-mnemonic-dos "dos")
 (setq eol-mnemonic-mac "mac")
 
