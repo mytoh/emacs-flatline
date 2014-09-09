@@ -32,9 +32,9 @@
     (if (string-empty-p str)
         str
       (cl-concatenate 'string
-                      (make-string num ?)
+                      (make-string num ?\ )
                       str
-                      (make-string num ?)))))
+                      (make-string num ?\ )))))
 
 (cl-defun flatline:make-component (comp)
   (cl-typecase comp
