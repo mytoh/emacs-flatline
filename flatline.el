@@ -32,9 +32,9 @@
     (if (string-empty-p str)
         str
       (cl-concatenate 'string
-                      (make-string num ? )
+                      (make-string num ?)
                       str
-                      (make-string num ? )))))
+                      (make-string num ?)))))
 
 (cl-defun flatline:make-component (comp)
   (cl-typecase comp
@@ -73,9 +73,9 @@
                              'face ',(flatline:theme-get-face (cdr comp)))))))))))
 
 (cl-defun flatline:make-component-symbol (comp)
-  (cl-case comp
-    (fill `(:eval (flatline:make-component-fill 'flatline:face-normal)))
-    (t (cond ((fboundp comp)
+  (pcase comp
+    (`fill `(:eval (flatline:make-component-fill 'flatline:face-normal)))
+    (_ (cond ((fboundp comp)
               `(:eval
                 (,comp)))))))
 
@@ -127,9 +127,9 @@
   (flatline:update))
 
 (define-minor-mode flatline-mode
-  :init-value nil
-  :group 'modeline
-  (flatline:mode-start))
+    :init-value nil
+    :group 'modeline
+    (flatline:mode-start))
 
 
 (provide 'flatline)
