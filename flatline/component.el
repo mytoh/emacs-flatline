@@ -53,7 +53,7 @@
   (cl-concatenate 'string
                   mode-name
                   (if mode-line-process mode-line-process)
-                  "%n"                  ))
+                  "%n"))
 
 (cl-defun flatline:minor-mode ()
   (propertize (format-mode-line minor-mode-alist) 'face 'flatline:face-minor-mode))
@@ -81,21 +81,39 @@
   (cl-letf ((npath (cl-remove-if (lambda (s) (string-empty-p s))
                                  (split-string (abbreviate-file-name (expand-file-name path)) "/"))))
     (cond
-     ((< 4 (length npath))
-      (concat (if (string= "~" (car npath))
-                  "" "/")
-              (string-join
-               (list
-                (car npath)
-                (cadr npath)
-                "..."
-                (car (last npath 2))
-                (car (last npath)))
-               "/")))
-     (t path))))
+      ((< 4 (length npath))
+       (concat (if (string= "~" (car npath))
+                   "" "/")
+               (string-join
+                (list
+                 (car npath)
+                 (cadr npath)
+                 "..."
+                 (car (last npath 2))
+                 (car (last npath)))
+                "/")))
+      (t path))))
 
 (cl-defun flatline:buffer-directory ()
   (flatline:shorten-path default-directory))
+
+(cl-defun flatline:evil-tag ()
+  (if (boundp 'evil-mode-line-tag)
+      (cond ((string-match "<I>" evil-mode-line-tag)
+             (propertize evil-mode-line-tag 'face
+                         (flatline:theme-get-face 'evil-insert)))
+            ((string-match "<N>" evil-mode-line-tag)
+             (propertize evil-mode-line-tag 'face
+                         (flatline:theme-get-face 'evil-normal)))
+            ((string-match "<V>" evil-mode-line-tag)
+             (propertize evil-mode-line-tag 'face
+                         (flatline:theme-get-face 'evil-visual)))
+            ((string-match "<O>" evil-mode-line-tag)
+             (propertize evil-mode-line-tag 'face
+                         (flatline:theme-get-face 'evil-operator)))
+            (t
+             evil-mode-line-tag))
+    ""))
 
 (provide 'flatline-component)
 
