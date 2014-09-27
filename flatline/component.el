@@ -99,18 +99,21 @@
 
 (cl-defun flatline:evil-tag ()
   (if (boundp 'evil-mode-line-tag)
-      (cond ((string-match "<I>" evil-mode-line-tag)
+      (cond ((evil-insert-state-p)
              (propertize evil-mode-line-tag 'face
                          (flatline:theme-get-face 'evil-insert)))
-            ((string-match "<N>" evil-mode-line-tag)
+            ((evil-normal-state-p)
              (propertize evil-mode-line-tag 'face
                          (flatline:theme-get-face 'evil-normal)))
-            ((string-match "<V>" evil-mode-line-tag)
+            ((evil-visual-state-p)
              (propertize evil-mode-line-tag 'face
                          (flatline:theme-get-face 'evil-visual)))
-            ((string-match "<O>" evil-mode-line-tag)
+            ((evil-operator-state-p)
              (propertize evil-mode-line-tag 'face
                          (flatline:theme-get-face 'evil-operator)))
+            ((evil-emacs-state-p)
+             (propertize evil-mode-line-tag 'face
+                         (flatline:theme-get-face 'evil-emacs)))
             (t
              evil-mode-line-tag))
     ""))
