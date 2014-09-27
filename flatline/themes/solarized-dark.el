@@ -55,6 +55,13 @@
           :box nil)))
   "face for evil operator")
 
+(defface flatline-solarized-dark-evil-emacs
+    '((t (:foreground  "white"
+          :background "#00736F"
+          :box nil)))
+
+  "face for evil operator")
+
 (provide 'flatline-theme-solarized-dark)
 
 
