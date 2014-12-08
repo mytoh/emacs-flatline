@@ -88,7 +88,7 @@
                                                        (equalp 'fill (car x))
                                                      nil))
                                                  flatline:mode-line))))
-             (rlen (flatline:width (cl-mapcar 'flatline:make-component right-comps))))
+             (rlen (flatline:width (cl-mapcar #'flatline:make-component right-comps))))
     (if (eq 'right (get-scroll-bar-mode))
         (propertize " " 'display '((space :align-to (- right 21)))
                     'face face)
@@ -111,7 +111,7 @@
 (cl-defun flatline:set-default ()
   (setq-default mode-line-format
                 (cl-mapcar
-                 'flatline:make-component
+                 #'flatline:make-component
                  flatline:mode-line)))
 
 (cl-defun flatline:update ()
