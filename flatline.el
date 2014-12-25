@@ -106,7 +106,7 @@
 (cl-defun flatline:width (value)
   (if (not value)
       0
-    (length (format-mode-line value))))
+    (string-width (format-mode-line value))))
 
 (cl-defun flatline:set-default ()
   (setq-default mode-line-format
