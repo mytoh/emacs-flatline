@@ -5,7 +5,8 @@
 ;;; http://amitp.blogspot.jp/2011/08/emacs-custom-mode-line.html
 
 (eval-when-compile
-  (require 'cl-lib))
+  (require 'cl-lib)
+  (require 'cl-generic))
 
 (require 'flatline-face "flatline/face")
 (require 'flatline-component "flatline/component")
@@ -36,16 +37,16 @@
                       str
                       (make-string num ?\ )))))
 
-(cl-defun flatline:make-component (comp)
-  (cl-typecase comp
-    (cons (flatline:make-component-list comp))
-    (string (flatline:make-component-string comp))
-    (symbol (flatline:make-component-symbol comp))))
+;; (cl-defun flatline:make-component (comp)
+;;   (cl-typecase comp
+;;     (cons (flatline:make-component-list comp))
+;;     (string (flatline:make-component-string comp))
+;;     (symbol (flatline:make-component-symbol comp))))
 
-(cl-defun flatline:make-component-string (comp)
+(cl-defmethod flatline:make-component ((comp string))
   (flatline:pad comp))
 
-(cl-defun flatline:make-component-list (comp)
+(cl-defmethod flatline:make-component ((comp list))
   (cl-typecase (car comp)
     (string
      (cond ((facep (cdr comp))
@@ -72,7 +73,7 @@
                  (propertize (flatline:pad (,(car comp)))
                              'face ',(flatline:theme-get-face (cdr comp)))))))))))
 
-(cl-defun flatline:make-component-symbol (comp)
+(cl-defmethod flatline:make-component ((comp symbol))
   (pcase comp
     (`fill `(:eval (flatline:make-component-fill 'flatline:face-normal)))
     (_ (cond ((fboundp comp)
