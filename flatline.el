@@ -36,12 +36,6 @@
                       str
                       (make-string num ?\s)))))
 
-;; (cl-defun flatline:make-component (comp)
-;;   (cl-typecase comp
-;;     (cons (flatline:make-component-list comp))
-;;     (string (flatline:make-component-string comp))
-;;     (symbol (flatline:make-component-symbol comp))))
-
 (cl-defmethod flatline:make-component ((comp string))
   (flatline:pad comp))
 
