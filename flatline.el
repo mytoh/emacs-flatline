@@ -73,13 +73,13 @@
               `(:eval
                 (,comp)))))))
 
-(cl-defun flatline:make-component-fill (_face)
-  (cl-letf* ((face (cond ((facep _face) _face)
-                         ((symbolp _face) (flatline:theme-get-face _face))))
+(cl-defun flatline:make-component-fill (face)
+  (cl-letf* ((face (cond ((facep face) face)
+                         ((symbolp face) (flatline:theme-get-face face))))
              (right-comps (cdr (or (cl-member 'fill flatline:mode-line)
                                    (cl-member-if (lambda (x)
                                                    (if (consp x)
-                                                       (equalp 'fill (car x))
+                                                       (cl-equalp 'fill (car x))
                                                      nil))
                                                  flatline:mode-line))))
              (rlen (flatline:width (cl-mapcar #'flatline:make-component right-comps))))
