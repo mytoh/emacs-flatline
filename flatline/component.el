@@ -8,18 +8,18 @@
 (cl-defun flatline:column ()
   (propertize "%02c" 'face
               (if (>= (current-column) 80)
-                  'flatline:face-80col
-                'flatline:face-column)))
+                  'flatline:80col
+                'flatline:column)))
 
 (cl-defun flatline:line ()
-  (propertize "%02l" 'face 'flatline:face-line))
+  (propertize "%02l" 'face 'flatline:line))
 
 (cl-defun flatline:modified ()
   (cond (buffer-read-only
-         (propertize " RO " 'face 'flatline:face-read-only))
+         (propertize " RO " 'face 'flatline:read-only))
         ((buffer-modified-p)
-         (propertize " ** " 'face 'flatline:face-modified))
-        (t (propertize " -- " 'face 'flatline:face-not-modified))))
+         (propertize " ** " 'face 'flatline:modified))
+        (t (propertize " -- " 'face 'flatline:not-modified))))
 
 (cl-defun flatline:mule-info ()
   `((current-input-method
@@ -27,7 +27,7 @@
     (:eval (flatline:eol-desc))))
 
 (cl-defun flatline:mnemonic ()
-  (propertize (format-mode-line "%z") 'face 'flatline:face-mnemonic))
+  (propertize (format-mode-line "%z") 'face 'flatline:mnemonic))
 
 (setq eol-mnemonic-undecided ":")
 (setq eol-mnemonic-unix "␊ unix")
@@ -47,7 +47,7 @@
 
 (cl-defun flatline:client ()
   (propertize (if (frame-parameter nil 'client) "@" "/")
-              'face 'flatline:face-client))
+              'face 'flatline:client))
 
 (cl-defun flatline:major-mode ()
   (cl-concatenate 'string
@@ -56,25 +56,25 @@
                   "%n"))
 
 (cl-defun flatline:minor-mode ()
-  (propertize (format-mode-line minor-mode-alist) 'face 'flatline:face-minor-mode))
+  (propertize (format-mode-line minor-mode-alist) 'face 'flatline:minor-mode))
 
 (cl-defun flatline:warning ()
-  (propertize "%e" 'face 'flatline:face-warning))
+  (propertize "%e" 'face 'flatline:warning))
 
 (cl-defun flatline:misc-info ()
   `(:propertize
     mode-line-misc-info
-    face flatline:face-misc-info))
+    face flatline:misc-info))
 
 (cl-defun flatline:nyan-mode ()
   (when nyan-mode (list (nyan-create))))
 
 (cl-defun flatline:space (space)
-  (propertize space 'face 'flatline:face-space))
+  (propertize space 'face 'flatline:space))
 
 (cl-defun flatline:vc-mode ()
   (if vc-mode
-      (propertize vc-mode 'face 'flatline:face-vc-mode)
+      (propertize vc-mode 'face 'flatline:vc-mode)
     ""))
 
 (cl-defun flatline:shorten-path (path)

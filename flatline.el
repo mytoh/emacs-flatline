@@ -16,13 +16,13 @@
   :group 'mode-line)
 
 (defcustom flatline:mode-line
-  '(("%b" . flatline:face-buffer)
-    (flatline:major-mode . flatline:face-major-mode)
-    (flatline:minor-mode . flatline:face-minor-mode)
+  '(("%b" . flatline:buffer)
+    (flatline:major-mode . flatline:major-mode)
+    (flatline:minor-mode . flatline:minor-mode)
     fill
-    (flatline:column . flatline:face-column)
-    (flatline:line . flatline:face-line)
-    (flatline:buffer-directory . flatline:face-buffer-directory))
+    (flatline:column . flatline:column)
+    (flatline:line . flatline:line)
+    (flatline:buffer-directory . flatline:buffer-directory))
   "mode-line-format for flatline"
   :type 'list
   :group 'flatline)
@@ -68,7 +68,7 @@
 
 (cl-defmethod flatline:make-component ((comp symbol))
   (pcase comp
-    (`fill `(:eval (flatline:make-component-fill 'flatline:face-normal)))
+    (`fill `(:eval (flatline:make-component-fill 'flatline:normal)))
     (_ (cond ((fboundp comp)
               `(:eval
                 (,comp)))))))
