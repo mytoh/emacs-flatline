@@ -10,6 +10,7 @@
 (require 'flatline-face "flatline/face")
 (require 'flatline-component "flatline/component")
 (require 'flatline-theme "flatline/theme")
+(require 'flatline-window "flatline/flatline-window")
 
 (defgroup flatline nil
   "Faces used in the mode line."
@@ -68,10 +69,12 @@
 
 (cl-defmethod flatline:make-component ((comp symbol))
   (pcase comp
-    (`fill `(:eval (flatline:make-component-fill 'flatline:normal)))
+    (`fill `(:eval (flatline:make-component-fill
+                    (flatline:theme-get-face 'fill))))
     (_ (cond ((fboundp comp)
               `(:eval
                 (,comp)))))))
+
 
 (cl-defun flatline:make-component-fill (face)
   (cl-letf* ((face (cond ((facep face) face)
