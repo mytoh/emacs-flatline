@@ -84,10 +84,10 @@
                                                  flatline:mode-line))))
              (rlen (flatline:width (cl-mapcar #'flatline:make-component right-comps))))
     (if (eq 'right (get-scroll-bar-mode))
-        (propertize " " 'display '((space :align-to (- right 21)))
+        (propertize " " 'display `((space :align-to (- right-fringe ,(+ 1 rlen))))
                     'face face)
       (propertize " "
-                  'display `((space :align-to (- right ,rlen)))
+                  'display `((space :align-to (- right-fringe ,(+ 4 rlen))))
                   'face face))))
 
 (cl-defun flatline:add (comp)
@@ -100,7 +100,8 @@
 (cl-defun flatline:width (value)
   (if (not value)
       0
-    (string-width (format-mode-line value))))
+    (string-width
+     (format-mode-line value))))
 
 (cl-defun flatline:set-default ()
   (setq-default mode-line-format
