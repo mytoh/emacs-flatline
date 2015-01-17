@@ -14,12 +14,12 @@
 (set-face-attribute 'mode-line nil :foreground "gray60" :background "gray20" :inverse-video nil :box nil)
 
 ;; inactive face
-(defface flatline:inactive
+(defface flatline:normal-inactive
     '((t (:foreground "white" :background "black")))
   "flatline inactive face"
   :group 'flatline-face)
 (set-face-attribute 'mode-line-inactive nil
-                    :inherit 'flatline:inactive)
+                    :inherit 'flatline:normal-inactive)
 
 ;; warning
 (defface flatline:warning
