@@ -31,6 +31,19 @@
           :box nil)))
   "face for left sub sub")
 
+(defface flatline-solarized-dark-fill
+    '((t (:foreground "#93a1a1"
+          :background  "#073642"
+          :box nil)))
+  "face for left sub sub")
+
+
+(defface flatline-solarized-dark-fill-inactive
+    '((t (:foreground  "#073642"
+          :background "#93a1a1"
+          :box nil)))
+  "face for left sub sub")
+
 (defface flatline-solarized-dark-evil-normal
     '((t (:foreground  "white"
           :background "#2aa198"
