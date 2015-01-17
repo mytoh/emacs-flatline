@@ -1,4 +1,4 @@
-;;; theme.el -*- lexical-binding: t -*-
+1;;; theme.el -*- lexical-binding: t -*-
 
 (require 'flatline-theme-default "flatline/themes/default")
 (require 'flatline-theme-solarized-dark "flatline/themes/solarized-dark")
@@ -10,10 +10,24 @@
   (setq flatline:theme name))
 
 (cl-defun flatline:theme-get-face (part)
-  (intern
-   (string-join `( "flatline"
-                   ,(symbol-name flatline:theme)
-                   ,(symbol-name part)) "-")))
+  (cl-letf* ((active-name
+              (intern (string-join
+                       `( "flatline"
+                          ,(symbol-name flatline:theme)
+                          ,(symbol-name part))
+                       "-")))
+             (inactive-name
+              (intern (string-join
+                       `( "flatline"
+                          ,(symbol-name flatline:theme)
+                          ,(symbol-name part)
+                          "inactive")
+                       "-"))))
+    (if (flatline:selected-window-active-p)
+        active-name
+      (if (facep inactive-name)
+          inactive-name
+        active-name))))
 
 (provide 'flatline-theme)
 
