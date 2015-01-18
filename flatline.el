@@ -7,6 +7,8 @@
 (eval-when-compile
   (require 'cl-lib))
 
+(require 'seq)
+
 (require 'flatline-face "flatline/face")
 (require 'flatline-component "flatline/component")
 (require 'flatline-theme "flatline/theme")
@@ -85,7 +87,7 @@
                                                        (cl-equalp 'fill (car x))
                                                      nil))
                                                  flatline:mode-line))))
-             (rlen (flatline:width (cl-mapcar #'flatline:make-component right-comps))))
+             (rlen (flatline:width (seq-map #'flatline:make-component right-comps))))
     (if (eq 'right (get-scroll-bar-mode))
         (propertize " " 'display `((space :align-to (- right-fringe ,(+ 1 rlen))))
                     'face face)
@@ -108,7 +110,7 @@
 
 (cl-defun flatline:set-default ()
   (setq-default mode-line-format
-                (cl-mapcar
+                (seq-map
                  #'flatline:make-component
                  flatline:mode-line)))
 
