@@ -9,9 +9,9 @@
 
 (require 'seq)
 
-(require 'flatline-face "flatline/face")
-(require 'flatline-component "flatline/component")
-(require 'flatline-theme "flatline/theme")
+(require 'flatline-face "flatline/flatline-face")
+(require 'flatline-component "flatline/flatline-component")
+(require 'flatline-theme "flatline/flatline-theme")
 (require 'flatline-window "flatline/flatline-window")
 
 (defgroup flatline nil
