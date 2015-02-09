@@ -45,14 +45,15 @@
 (cl-defmethod flatline:make-component ((comp list))
   (cl-typecase (car comp)
     (string
-     (cond ((facep (cdr comp))
-            (cl-letf ((str (flatline:pad (car comp)))
-                      (face (cdr comp)))
-              `(:propertize ,str face ,face)))
-           ((symbolp (cdr comp))
-            (cl-letf ((str (flatline:pad (car comp)))
-                      (face (flatline:theme-get-face (cdr comp))))
-              `(:propertize ,str face ,face)))))
+     (pcase (cdr comp)
+       ((pred facep)
+        (cl-letf ((str (flatline:pad (car comp)))
+                  (face (cdr comp)))
+          `(:propertize ,str face ,face)))
+       ((pred symbolp)
+        (cl-letf ((str (flatline:pad (car comp)))
+                  (face (flatline:theme-get-face (cdr comp))))
+          `(:propertize ,str face ,face)))))
     (symbol
      (cond ((cl-equalp 'fill (car comp))
             `(:eval (flatline:make-component-fill ',(cdr comp))))
@@ -76,7 +77,6 @@
     (_ (cond ((fboundp comp)
               `(:eval
                 (,comp)))))))
-
 
 (cl-defun flatline:make-component-fill (face)
   (cl-letf* ((face (cond ((facep face) face)
@@ -127,9 +127,9 @@
   (flatline:update))
 
 (define-minor-mode flatline-mode
-    :init-value nil
-    :group 'modeline
-    (flatline:mode-start))
+  :init-value nil
+  :group 'modeline
+  (flatline:mode-start))
 
 
 (provide 'flatline)
