@@ -80,8 +80,8 @@
 (cl-defun flatline:shorten-path (path)
   (cl-letf ((npath (cl-remove-if (lambda (s) (string-empty-p s))
                                  (split-string (abbreviate-file-name (expand-file-name path)) "/"))))
-    (cond
-      ((< 4 (length npath))
+    (pcase (length npath)
+      ((pred (< 4))
        (concat (if (string= "~" (car npath))
                    "" "/")
                (string-join
@@ -92,7 +92,7 @@
                  (car (last npath 2))
                  (car (last npath)))
                 "/")))
-      (t path))))
+      (_ path))))
 
 (cl-defun flatline:buffer-directory ()
   (flatline:shorten-path default-directory))
