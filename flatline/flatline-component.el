@@ -78,7 +78,7 @@
     ""))
 
 (cl-defun flatline:shorten-path (path)
-  (cl-letf ((npath (cl-remove-if (lambda (s) (string-empty-p s))
+  (cl-letf ((npath (cl-remove-if #'string-empty-p
                                  (split-string (abbreviate-file-name (expand-file-name path)) "/"))))
     (pcase (length npath)
       ((pred (< 4))
