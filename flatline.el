@@ -43,32 +43,33 @@
   (flatline:pad comp))
 
 (cl-defmethod flatline:make-component ((comp list))
-  (cl-typecase (car comp)
-    (string
-     (pcase (cdr comp)
-       ((pred facep)
-        (cl-letf ((str (flatline:pad (car comp)))
-                  (face (cdr comp)))
-          `(:propertize ,str face ,face)))
-       ((pred symbolp)
-        (cl-letf ((str (flatline:pad (car comp)))
-                  (face (flatline:theme-get-face (cdr comp))))
-          `(:propertize ,str face ,face)))))
-    (symbol
-     (cond ((cl-equalp 'fill (car comp))
-            `(:eval (flatline:make-component-fill ',(cdr comp))))
-           ((and (fboundp (car comp))
-                 (facep (cdr comp)))
-            `(:eval
-              ((lambda ()
-                 (propertize (flatline:pad (,(car comp)))
-                             'face ',(cdr comp))))))
-           ((and (fboundp (car comp))
-                 (symbolp (cdr comp)))
-            `(:eval
-              ((lambda ()
-                 (propertize (flatline:pad (,(car comp)))
-                             'face ',(flatline:theme-get-face (cdr comp)))))))))))
+  (pcase-let ((`(,value . ,sym) comp))
+    (cl-typecase value
+      (string
+       (pcase sym
+         ((pred facep)
+          (cl-letf ((str (flatline:pad value))
+                    (face sym))
+            `(:propertize ,str face ,face)))
+         ((pred symbolp)
+          (cl-letf ((str (flatline:pad value))
+                    (face (flatline:theme-get-face sym)))
+            `(:propertize ,str face ,face)))))
+      (symbol
+       (cond ((cl-equalp 'fill value)
+              `(:eval (flatline:make-component-fill ',sym)))
+             ((and (fboundp value)
+                   (facep sym))
+              `(:eval
+                ((lambda ()
+                   (propertize (flatline:pad (,value))
+                               'face ',sym)))))
+             ((and (fboundp value)
+                   (symbolp sym))
+              `(:eval
+                ((lambda ()
+                   (propertize (flatline:pad (,value))
+                               'face ',(flatline:theme-get-face sym)))))))))))
 
 (cl-defmethod flatline:make-component ((comp symbol))
   (pcase comp
