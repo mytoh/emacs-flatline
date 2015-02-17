@@ -99,23 +99,24 @@
 
 (cl-defun flatline:evil-tag ()
   (if (boundp 'evil-mode-line-tag)
-      (cond ((evil-insert-state-p)
-             (propertize evil-mode-line-tag 'face
-                         (flatline:theme-get-face 'evil-insert)))
-            ((evil-normal-state-p)
-             (propertize evil-mode-line-tag 'face
-                         (flatline:theme-get-face 'evil-normal)))
-            ((evil-visual-state-p)
-             (propertize evil-mode-line-tag 'face
-                         (flatline:theme-get-face 'evil-visual)))
-            ((evil-operator-state-p)
-             (propertize evil-mode-line-tag 'face
-                         (flatline:theme-get-face 'evil-operator)))
-            ((evil-emacs-state-p)
-             (propertize evil-mode-line-tag 'face
-                         (flatline:theme-get-face 'evil-emacs)))
-            (t
-             evil-mode-line-tag))
+      (pcase evil-state
+        (`insert
+         (propertize evil-mode-line-tag 'face
+                     (flatline:theme-get-face 'evil-insert)))
+        (`normal
+         (propertize evil-mode-line-tag 'face
+                     (flatline:theme-get-face 'evil-normal)))
+        (`visual
+         (propertize evil-mode-line-tag 'face
+                     (flatline:theme-get-face 'evil-visual)))
+        (`operator
+         (propertize evil-mode-line-tag 'face
+                     (flatline:theme-get-face 'evil-operator)))
+        (`emacs
+         (propertize evil-mode-line-tag 'face
+                     (flatline:theme-get-face 'evil-emacs)))
+        (_
+         evil-mode-line-tag))
     ""))
 
 (provide 'flatline-component)
