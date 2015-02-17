@@ -32,12 +32,12 @@
 
 (cl-defun flatline:pad (str &optional n)
   (cl-letf ((num (or n 1)))
-    (if (string-empty-p str)
-        str
-      (cl-concatenate 'string
-                      (make-string num ?\s)
-                      str
-                      (make-string num ?\s)))))
+    (pcase str
+      ("" str)
+      (_ (cl-concatenate 'string
+                         (make-string num ?\s)
+                         str
+                         (make-string num ?\s))))))
 
 (cl-defmethod flatline:make-component ((comp string))
   (flatline:pad comp))
