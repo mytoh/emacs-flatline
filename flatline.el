@@ -56,20 +56,21 @@
                     (face (flatline:theme-get-face sym)))
             `(:propertize ,str face ,face)))))
       (symbol
-       (cond ((cl-equalp 'fill value)
-              `(:eval (flatline:make-component-fill ',sym)))
-             ((and (fboundp value)
-                   (facep sym))
-              `(:eval
-                ((lambda ()
-                   (propertize (flatline:pad (,value))
-                               'face ',sym)))))
-             ((and (fboundp value)
-                   (symbolp sym))
-              `(:eval
-                ((lambda ()
-                   (propertize (flatline:pad (,value))
-                               'face ',(flatline:theme-get-face sym)))))))))))
+       (pcase value
+         (`fill
+          `(:eval (flatline:make-component-fill ',sym)))
+         ((and (pred fboundp)
+               (guard (facep sym)))
+          `(:eval
+            ((lambda ()
+               (propertize (flatline:pad (,value))
+                           'face ',sym)))))
+         ((and (pred fboundp)
+               (guard (symbolp sym)))
+          `(:eval
+            ((lambda ()
+               (propertize (flatline:pad (,value))
+                           'face ',(flatline:theme-get-face sym)))))))))))
 
 (cl-defmethod flatline:make-component ((comp symbol))
   (pcase comp
