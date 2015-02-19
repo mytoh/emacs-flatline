@@ -38,7 +38,7 @@
   (cl-letf* ((eol (coding-system-eol-type buffer-file-coding-system))
              (mnemonic (coding-system-eol-type-mnemonic buffer-file-coding-system))
              (desc (cl-assoc eol mode-line-eol-desc-cache)))
-    (if (and desc (eq (cadr desc) mnemonic))
+    (if (and desc (eq (cl-second desc) mnemonic))
         (cddr desc)
       (if desc (setq mode-line-eol-desc-cache nil)) ;Flush the cache if stale.
       (setq desc mnemonic)
@@ -82,15 +82,15 @@
                                  (split-string (abbreviate-file-name (expand-file-name path)) "/"))))
     (pcase (length npath)
       ((pred (< 4))
-       (concat (if (string= "~" (car npath))
+       (concat (if (string= "~" (cl-first npath))
                    "" "/")
                (string-join
                 (list
-                 (car npath)
-                 (cadr npath)
+                 (cl-first npath)
+                 (cl-second npath)
                  "..."
-                 (car (last npath 2))
-                 (car (last npath)))
+                 (cl-first (last npath 2))
+                 (cl-first (last npath)))
                 "/")))
       (_ path))))
 
