@@ -1,4 +1,4 @@
-;;; component.el -*- lexical-binding: t -*-
+;;; pulse.el -*- lexical-binding: t -*-
 
 (require 'subr-x)
 
@@ -120,7 +120,7 @@
          evil-mode-line-tag))
     ""))
 
-(provide 'flatline-component)
+(provide 'flatline-pulse)
 
 ;; Local Variables:
 ;; byte-compile-warnings: (not cl-functions obsolete)

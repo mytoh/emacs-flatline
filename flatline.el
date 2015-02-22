@@ -10,7 +10,7 @@
 (require 'seq)
 
 (require 'flatline-face "flatline/flatline-face")
-(require 'flatline-component "flatline/flatline-component")
+(require 'flatline-pulse "flatline/flatline-pulse")
 (require 'flatline-theme "flatline/flatline-theme")
 (require 'flatline-window "flatline/flatline-window")
 
@@ -39,11 +39,11 @@
                          str
                          (make-string num ?\s))))))
 
-(cl-defmethod flatline:make-component ((comp string))
-  (flatline:pad comp))
+(cl-defmethod flatline:make-pulse ((pulse string))
+  (flatline:pad pulse))
 
-(cl-defmethod flatline:make-component ((comp list))
-  (pcase-let ((`(,value . ,sym) comp))
+(cl-defmethod flatline:make-pulse ((pulse list))
+  (pcase-let ((`(,value . ,sym) pulse))
     (cl-typecase value
       (string
        (pcase sym
@@ -58,7 +58,7 @@
       (symbol
        (pcase value
          (`fill
-          `(:eval (flatline:make-component-fill ',sym)))
+          `(:eval (flatline:make-pulse-fill ',sym)))
          ((and (pred fboundp)
                (guard (facep sym)))
           `(:eval
@@ -72,24 +72,24 @@
                (propertize (flatline:pad (,value))
                            'face ',(flatline:theme-get-face sym)))))))))))
 
-(cl-defmethod flatline:make-component ((comp symbol))
-  (pcase comp
-    (`fill `(:eval (flatline:make-component-fill
+(cl-defmethod flatline:make-pulse ((pulse symbol))
+  (pcase pulse
+    (`fill `(:eval (flatline:make-pulse-fill
                     (flatline:theme-get-face 'fill))))
-    (_ (cond ((fboundp comp)
+    (_ (cond ((fboundp pulse)
               `(:eval
-                (,comp)))))))
+                (,pulse)))))))
 
-(cl-defun flatline:make-component-fill (face)
+(cl-defun flatline:make-pulse-fill (face)
   (cl-letf* ((face (cond ((facep face) face)
                          ((symbolp face) (flatline:theme-get-face face))))
-             (right-comps (cl-rest (or (cl-member 'fill flatline:mode-line)
-                                       (cl-member-if (lambda (x)
-                                                       (if (consp x)
-                                                           (cl-equalp 'fill (cl-first x))
-                                                         nil))
-                                                     flatline:mode-line))))
-             (rlen (flatline:width (seq-map #'flatline:make-component right-comps))))
+             (right-pulses (cl-rest (or (cl-member 'fill flatline:mode-line)
+                                        (cl-member-if (lambda (x)
+                                                        (if (consp x)
+                                                            (cl-equalp 'fill (cl-first x))
+                                                          nil))
+                                                      flatline:mode-line))))
+             (rlen (flatline:width (seq-map #'flatline:make-pulse right-pulses))))
     (if (eq 'right (get-scroll-bar-mode))
         (propertize " " 'display `((space :align-to (- right-fringe ,(+ 1 rlen))))
                     'face face)
@@ -97,12 +97,12 @@
                   'display `((space :align-to (- right-fringe ,(+ 4 rlen))))
                   'face face))))
 
-(cl-defun flatline:add (comp)
+(cl-defun flatline:add (pulse)
   (if (and (boundp 'flatline:mode-line)
            (not (null flatline:mode-line)))
       (setq flatline:mode-line
-            (append flatline:mode-line (list comp)))
-    (setq flatline:mode-line `(,comp))))
+            (append flatline:mode-line (list pulse)))
+    (setq flatline:mode-line `(,pulse))))
 
 (cl-defun flatline:width (value)
   (if (not value)
@@ -113,7 +113,7 @@
 (cl-defun flatline:set-default ()
   (setq-default mode-line-format
                 (seq-map
-                 #'flatline:make-component
+                 #'flatline:make-pulse
                  flatline:mode-line)))
 
 (cl-defun flatline:update ()
