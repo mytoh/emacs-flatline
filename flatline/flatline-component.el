@@ -67,7 +67,8 @@
     face flatline:misc-info))
 
 (cl-defun flatline:nyan-mode ()
-  (when nyan-mode (list (nyan-create))))
+  (when (fboundp 'nyan-mode)
+    (list (nyan-create))))
 
 (cl-defun flatline:space (space)
   (propertize space 'face 'flatline:space))
