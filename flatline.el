@@ -4,9 +4,7 @@
 
 ;;; http://amitp.blogspot.jp/2011/08/emacs-custom-mode-line.html
 
-(eval-when-compile
-  (require 'cl-lib))
-
+(require 'cl-lib)
 (require 'seq)
 
 (require 'flatline-face "flatline/flatline-face")
