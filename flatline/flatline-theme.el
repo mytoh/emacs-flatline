@@ -1,5 +1,6 @@
-1;;; theme.el -*- lexical-binding: t -*-
+;;; theme.el -*- lexical-binding: t -*-
 
+(require 'glof)
 (require 'flatline-theme-default "flatline/themes/default")
 (require 'flatline-theme-solarized-dark "flatline/themes/solarized-dark")
 
@@ -14,13 +15,13 @@
               (intern (string-join
                        `( "flatline"
                           ,(symbol-name flatline:theme)
-                          ,(symbol-name part))
+                          ,(glof:stringify part))
                        "-")))
              (inactive-name
               (intern (string-join
                        `( "flatline"
                           ,(symbol-name flatline:theme)
-                          ,(symbol-name part)
+                          ,(glof:stringify part)
                           "inactive")
                        "-"))))
     (if (flatline:selected-window-active-p)
