@@ -20,7 +20,7 @@
   '(("%b" . flatline:buffer)
     (flatline:major-mode . flatline:major-mode)
     (flatline:minor-mode . flatline:minor-mode)
-    fill
+    :fill
     (flatline:column . flatline:column)
     (flatline:line . flatline:line)
     (flatline:buffer-directory . flatline:buffer-directory))
@@ -55,7 +55,7 @@
             `(:propertize ,str face ,face)))))
       (symbol
        (pcase value
-         (`fill
+         (:fill
           `(:eval (flatline:make-pulse-fill ',sym)))
          ((and (pred fboundp)
                (guard (facep sym)))
@@ -72,8 +72,8 @@
 
 (cl-defmethod flatline:make-pulse ((pulse symbol))
   (pcase pulse
-    (`fill `(:eval (flatline:make-pulse-fill
-                    (flatline:theme-get-face 'fill))))
+    (:fill `(:eval (flatline:make-pulse-fill
+                    (flatline:theme-get-face :fill))))
     (_ (cond ((fboundp pulse)
               `(:eval
                 (,pulse)))))))
@@ -81,10 +81,10 @@
 (cl-defun flatline:make-pulse-fill (face)
   (cl-letf* ((face (cond ((facep face) face)
                          ((symbolp face) (flatline:theme-get-face face))))
-             (right-pulses (cl-rest (or (cl-member 'fill flatline:mode-line)
+             (right-pulses (cl-rest (or (cl-member :fill flatline:mode-line)
                                         (cl-member-if (lambda (x)
                                                         (if (consp x)
-                                                            (cl-equalp 'fill (cl-first x))
+                                                            (cl-equalp :fill (cl-first x))
                                                           nil))
                                                       flatline:mode-line))))
              (rlen (flatline:width (seq-map #'flatline:make-pulse right-pulses))))
