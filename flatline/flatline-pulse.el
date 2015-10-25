@@ -50,10 +50,10 @@
               'face 'flatline:client))
 
 (cl-defun flatline:major-mode ()
-  (cl-concatenate 'string
-                  mode-name
-                  (if mode-line-process mode-line-process)
-                  "%n"))
+  (seq-concatenate 'string
+                   mode-name
+                   (if mode-line-process mode-line-process)
+                   "%n"))
 
 (cl-defun flatline:minor-mode ()
   (propertize (format-mode-line minor-mode-alist) 'face 'flatline:minor-mode))
