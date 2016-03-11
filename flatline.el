@@ -7,6 +7,8 @@
 (require 'cl-lib)
 (require 'seq)
 
+(require 'glof)
+
 (require 'flatline-face "flatline/flatline-face")
 (require 'flatline-pulse "flatline/flatline-pulse")
 (require 'flatline-theme "flatline/flatline-theme")
@@ -17,13 +19,13 @@
   :group 'mode-line)
 
 (defcustom flatline:mode-line
-  '(("%b" . flatline:buffer)
-    (flatline:major-mode . flatline:major-mode)
-    (flatline:minor-mode . flatline:minor-mode)
+  '((:body "%b" :face flatline:buffer)
+    (:body flatline:major-mode :face flatline:major-mode)
+    (:body flatline:minor-mode :face flatline:minor-mode)
     :fill
-    (flatline:column . flatline:column)
-    (flatline:line . flatline:line)
-    (flatline:buffer-directory . flatline:buffer-directory))
+    (:body flatline:column :face flatline:column)
+    (:body flatline:line :face flatline:line)
+    (:body flatline:buffer-directory :face flatline:buffer-directory))
   "mode-line-format for flatline"
   :type 'list
   :group 'flatline)
@@ -41,7 +43,8 @@
   (flatline:pad pulse))
 
 (cl-defmethod flatline:make-pulse ((pulse list))
-  (pcase-let ((`(,value . ,sym) pulse))
+  (pcase-let ((value (glof:get pulse :body))
+              (sym (glof:get pulse :face)))
     (cl-typecase value
       (string
        (pcase sym
@@ -58,13 +61,13 @@
          (:fill
           `(:eval (flatline:make-pulse-fill ',sym)))
          ((and (pred fboundp)
-               (guard (facep sym)))
+             (guard (facep sym)))
           `(:eval
             ((lambda ()
                (propertize (flatline:pad (,value))
                            'face ',sym)))))
          ((and (pred fboundp)
-               (guard (symbolp sym)))
+             (guard (symbolp sym)))
           `(:eval
             ((lambda ()
                (propertize (flatline:pad (,value))
@@ -82,11 +85,11 @@
   (cl-letf* ((face (cond ((facep face) face)
                          ((symbolp face) (flatline:theme-get-face face))))
              (right-pulses (cl-rest (or (cl-member :fill flatline:mode-line)
-                                        (cl-member-if (lambda (x)
-                                                        (if (consp x)
-                                                            (cl-equalp :fill (cl-first x))
-                                                          nil))
-                                                      flatline:mode-line))))
+                                       (cl-member-if (lambda (x)
+                                                       (if (consp x)
+                                                           (cl-equalp :fill (cl-first x))
+                                                         nil))
+                                                     flatline:mode-line))))
              (rlen (flatline:width (seq-map #'flatline:make-pulse right-pulses))))
     (if (eq 'right (get-scroll-bar-mode))
         (propertize " " 'display `((space :align-to (- right-fringe ,(+ 1 rlen))))
@@ -127,9 +130,9 @@
   (flatline:update))
 
 (define-minor-mode flatline-mode
-  :init-value nil
-  :group 'modeline
-  (flatline:mode-start))
+    :init-value nil
+    :group 'modeline
+    (flatline:mode-start))
 
 
 (provide 'flatline)
