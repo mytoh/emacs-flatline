@@ -15,13 +15,13 @@
               (intern (string-join
                        `( "flatline"
                           ,(symbol-name flatline:theme)
-                          ,(glof:stringify part))
+                          ,(glof:string part))
                        "-")))
              (inactive-name
               (intern (string-join
                        `( "flatline"
                           ,(symbol-name flatline:theme)
-                          ,(glof:stringify part)
+                          ,(glof:string part)
                           "inactive")
                        "-"))))
     (if (flatline:selected-window-active-p)
