@@ -5,11 +5,14 @@
 (cl-defun flatline:front-space ()
   (if (display-graphic-p) " " "-"))
 
-(cl-defun flatline:column ()
-  (propertize "%02c" 'face
-              (if (>= (current-column) 80)
-                  'flatline:80col
-                'flatline:column)))
+(defvar flatline:column 
+  (glof:plist
+   :face 'flatline:column
+   :body (lambda ()
+           (propertize "%02c" 'face
+                       (if (>= (current-column) 80)
+                           'flatline:80col
+                         'flatline:column)))))
 
 (cl-defun flatline:line ()
   (propertize "%02l" 'face 'flatline:line))

@@ -19,11 +19,11 @@
   :group 'mode-line)
 
 (defcustom flatline:mode-line
-  '((:body "%b" :face flatline:buffer)
+  `((:body "%b" :face flatline:buffer)
     (:body flatline:major-mode :face flatline:major-mode)
     (:body flatline:minor-mode :face flatline:minor-mode)
     :fill
-    (:body flatline:column :face flatline:column)
+    ,flatline:column
     (:body flatline:line :face flatline:line)
     (:body flatline:buffer-directory :face flatline:buffer-directory))
   "mode-line-format for flatline"
@@ -100,7 +100,7 @@
 
 (cl-defun flatline:add (pulse)
   (if (and (boundp 'flatline:mode-line)
-           (not (null flatline:mode-line)))
+         (not (null flatline:mode-line)))
       (setq flatline:mode-line
             (append flatline:mode-line (list pulse)))
     (setq flatline:mode-line `(,pulse))))
